@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Config Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary: #7209b7;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --error: #e74c3c;
+            --border: #dee2e6;
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+            --gradient: linear-gradient(120deg, #4361ee, #3a0ca3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 18px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+        
+        header {
+            background: var(--gradient);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(30deg);
+        }
+        
+        header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+            font-weight: 700;
+        }
+        
+        header p {
+            opacity: 0.9;
+            font-size: 18px;
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            padding: 35px;
+        }
+        
+        .form-section {
+            margin-bottom: 35px;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+            color: var(--primary-dark);
+        }
+        
+        .section-title i {
+            font-size: 26px;
+        }
+        
+        .form-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 16px 18px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: var(--transition);
+            background: #fcfcfc;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+            background: white;
+        }
+        
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .input-icon .form-control {
+            padding-left: 50px;
+        }
+        
+        .mode-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .mode-option {
+            text-align: center;
+            padding: 25px 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+        }
+        
+        .mode-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mode-option.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(58, 12, 163, 0.05));
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.15);
+        }
+        
+        .mode-option i {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: var(--gray);
+            transition: var(--transition);
+        }
+        
+        .mode-option.active i {
+            color: var(--primary);
+        }
+        
+        .mode-option h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .mode-option p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .mode-fields {
+            display: none;
+            background: var(--light);
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .fields-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .optional-badge {
+            background: var(--gray);
+            color: white;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-left: 8px;
+        }
+        
+        .required-badge {
+            background: var(--error);
+            color: white;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-left: 8px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 28px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            gap: 10px;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 18px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-block {
+            display: flex;
+            width: 100%;
+        }
+        
+        .btn-secondary {
+            background: var(--gray);
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-success {
+            background: var(--success);
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .btn-telegram {
+            background: #0088cc;
+        }
+        
+        .btn-telegram:hover {
+            background: #006da3;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 18px;
+            margin-top: 30px;
+        }
+        
+        .output-container {
+            margin-top: 35px;
+            background: var(--light);
+            padding: 30px;
+            border-radius: 12px;
+            display: none;
+            border-left: 5px solid var(--success);
+        }
+        
+        .output-container h3 {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--primary);
+        }
+        
+        .url-box {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            word-break: break-all;
+            margin-bottom: 25px;
+            font-family: monospace;
+            font-size: 15px;
+            line-height: 1.5;
+            position: relative;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 6px 12px;
+            background: var(--light);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: var(--transition);
+        }
+        
+        .copy-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .usage-note {
+            background: #e9f7ff;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 15px;
+            border-left: 5px solid var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        .usage-note i {
+            color: var(--accent);
+            margin-right: 10px;
+        }
+        
+        .config-info {
+            background: #fff8e1;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 15px;
+            border-left: 5px solid var(--warning);
+        }
+        
+        .config-info i {
+            color: var(--warning);
+            margin-right: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
+            font-size: 15px;
+            margin-top: 30px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            padding: 18px 24px;
+            border-radius: 10px;
+            background: var(--success);
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .history-panel {
+            margin-top: 35px;
+            background: var(--light);
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .history-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.7);
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .made-by {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 20px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .mode-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .fields-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            header h1 {
+                font-size: 28px;
+            }
+            
+            header p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-cogs"></i> Portal Config Generator</h1>
+            <p>Generate configuration URLs for your IPTV portals with ease</p>
+        </header>
+        
+        <div class="content">
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-sliders-h"></i>
+                    <h2>Portal Configuration</h2>
+                </div>
+                
+                <h3>Select Portal Mode</h3>
+                <div class="mode-selector">
+                    <div class="mode-option" data-mode="stalker">
+                        <i class="fas fa-tv"></i>
+                        <h3>Stalker</h3>
+                        <p>Portal mode</p>
+                    </div>
+                    <div class="mode-option" data-mode="xstream">
+                        <i class="fas fa-stream"></i>
+                        <h3>Xstream</h3>
+                        <p>API mode</p>
+                    </div>
+                    <div class="mode-option" data-mode="mag">
+                        <i class="fas fa-satellite-dish"></i>
+                        <h3>Mag</h3>
+                        <p>Device mode</p>
+                    </div>
+                </div>
+                
+                <div id="stalker-fields" class="mode-fields">
+                    <h3><i class="fas fa-tv"></i> Stalker Portal Configuration</h3>
+                    <div class="fields-grid">
+                        <div class="form-group">
+                            <label for="stalker_url">Portal URL <span class="required-badge">Required</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-link"></i>
+                                <input type="text" id="stalker_url" class="form-control" placeholder="http://example.com/stalker_portal/">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mac">MAC Address <span class="required-badge">Required</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-microchip"></i>
+                                <input type="text" id="mac" class="form-control" placeholder="00:1A:79:XX:XX:XX">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="sn">Serial Number <span class="optional-badge">Optional</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-barcode"></i>
+                                <input type="text" id="sn" class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="device_id1">Device ID 1 <span class="optional-badge">Optional</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-id-card"></i>
+                                <input type="text" id="device_id1" class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="device_id2">Device ID 2 <span class="optional-badge">Optional</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-id-card-alt"></i>
+                                <input type="text" id="device_id2" class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="sig">Signature <span class="optional-badge">Optional</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-signature"></i>
+                                <input type="text" id="sig" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="xstream-fields" class="mode-fields">
+                    <h3><i class="fas fa-stream"></i> Xstream Configuration</h3>
+                    <div class="fields-grid">
+                        <div class="form-group">
+                            <label for="host">Host URL <span class="required-badge">Required</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-server"></i>
+                                <input type="text" id="host" class="form-control" placeholder="http://example.com:80">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="username">Username <span class="required-badge">Required</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="username" class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Password <span class="required-badge">Required</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="password" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="mag-fields" class="mode-fields">
+                    <h3><i class="fas fa-satellite-dish"></i> Mag Device Configuration</h3>
+                    <div class="fields-grid">
+                        <div class="form-group">
+                            <label for="portal">Portal URL <span class="required-badge">Required</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-link"></i>
+                                <input type="text" id="portal" class="form-control" placeholder="http://example.com/">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mac_mag">MAC Address <span class="required-badge">Required</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-microchip"></i>
+                                <input type="text" id="mac_mag" class="form-control" placeholder="00:1A:79:XX:XX:XX">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="generateBtn" class="btn btn-block"><i class="fas fa-bolt"></i> Generate URL</button>
+                <button id="resetBtn" class="btn btn-secondary"><i class="fas fa-redo"></i> Reset</button>
+                <button id="historyBtn" class="btn btn-success"><i class="fas fa-history"></i> History</button>
+            </div>
+            
+            <div id="output" class="output-container">
+                <h3><i class="fas fa-code"></i> Generated Configuration URL</h3>
+                <div class="url-box">
+                    <span id="generatedUrl"></span>
+                    <button class="copy-btn" id="copyBtn"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                
+                <div class="usage-note">
+                    <p><i class="fas fa-info-circle"></i> <strong>Usage instructions:</strong> Use this URL as a playlist URL in your IPTV player. For specific channels, append "&id=channelId" to the URL.</p>
+                </div>
+                
+                <div class="config-info">
+                    <p><i class="fas fa-database"></i> <strong>Config Data:</strong> <span id="configData"></span></p>
+                </div>
+            </div>
+            
+            <div class="history-panel" id="historyPanel">
+                <h3><i class="fas fa-history"></i> Generated URLs History</h3>
+                <div id="historyList"></div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Portal Config Generator &copy; 2023 | All rights reserved</p>
+            <div class="footer-links">
+                <span class="made-by">
+                    <i class="fas fa-code"></i> Made by StevoSure
+                </span>
+                <a href="https://t.me/uxplaylists" target="_blank" class="btn btn-telegram">
+                    <i class="fab fa-telegram"></i> Join Telegram
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>URL copied to clipboard!</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modeOptions = document.querySelectorAll('.mode-option');
+            const modeFields = document.querySelectorAll('.mode-fields');
+            const generateBtn = document.getElementById('generateBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const historyBtn = document.getElementById('historyBtn');
+            const outputContainer = document.getElementById('output');
+            const generatedUrl = document.getElementById('generatedUrl');
+            const configData = document.getElementById('configData');
+            const notification = document.getElementById('notification');
+            const historyPanel = document.getElementById('historyPanel');
+            const historyList = document.getElementById('historyList');
+            
+            let history = JSON.parse(localStorage.getItem('portalHistory')) || [];
+            
+            // Render history if exists
+            renderHistory();
+            
+            // Mode selection handler
+            modeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const mode = this.getAttribute('data-mode');
+                    
+                    // Update active state
+                    modeOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show relevant fields
+                    modeFields.forEach(field => field.style.display = 'none');
+                    document.getElementById(`${mode}-fields`).style.display = 'block';
+                });
+            });
+            
+            // Function to remove trailing 'c/' from URLs
+            function normalizeUrl(url) {
+                if (url.endsWith('c/')) {
+                    return url.slice(0, -2);
+                }
+                return url;
+            }
+            
+            // Generate URL handler
+            generateBtn.addEventListener('click', function() {
+                const workerUrl = "https://madebystevo.workers.dev/";
+                const activeMode = document.querySelector('.mode-option.active');
+                
+                if (!activeMode) {
+                    showError('Please select a portal mode first.');
+                    return;
+                }
+                
+                const mode = activeMode.getAttribute('data-mode');
+                let config = { mode };
+                let isValid = true;
+                let errorMessage = '';
+                
+                if (mode === 'stalker') {
+                    config.stalker_url = normalizeUrl(document.getElementById('stalker_url').value.trim());
+                    config.mac = document.getElementById('mac').value.trim();
+                    config.sn = document.getElementById('sn').value.trim();
+                    config.device_id1 = document.getElementById('device_id1').value.trim();
+                    config.device_id2 = document.getElementById('device_id2').value.trim();
+                    config.sig = document.getElementById('sig').value.trim();
+                    
+                    if (!config.stalker_url || !config.mac) {
+                        isValid = false;
+                        errorMessage = 'Please fill in required Stalker fields (URL and MAC Address).';
+                    } else if (!isValidUrl(config.stalker_url)) {
+                        isValid = false;
+                        errorMessage = 'Please enter a valid Portal URL.';
+                    }
+                } else if (mode === 'xstream') {
+                    config.host = normalizeUrl(document.getElementById('host').value.trim());
+                    config.username = document.getElementById('username').value.trim();
+                    config.password = document.getElementById('password').value.trim();
+                    
+                    if (!config.host || !config.username || !config.password) {
+                        isValid = false;
+                        errorMessage = 'Please fill in all required Xstream fields.';
+                    } else if (!isValidUrl(config.host)) {
+                        isValid = false;
+                        errorMessage = 'Please enter a valid Host URL.';
+                    }
+                } else if (mode === 'mag') {
+                    config.portal = normalizeUrl(document.getElementById('portal').value.trim());
+                    config.mac = document.getElementById('mac_mag').value.trim();
+                    
+                    if (!config.portal || !config.mac) {
+                        isValid = false;
+                        errorMessage = 'Please fill in required Mag fields (Portal URL and MAC Address).';
+                    } else if (!isValidUrl(config.portal)) {
+                        isValid = false;
+                        errorMessage = 'Please enter a valid Portal URL.';
+                    }
+                }
+                
+                if (isValid) {
+                    const encoded = btoa(JSON.stringify(config));
+                    const fullUrl = `${workerUrl}?c=${encoded}`;
+                    generatedUrl.textContent = fullUrl;
+                    configData.textContent = encoded;
+                    outputContainer.style.display = 'block';
+                    
+                    // Add to history
+                    addToHistory(mode, fullUrl);
+                    
+                    // Scroll to output
+                    outputContainer.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    showError(errorMessage);
+                }
+            });
+            
+            // Reset form handler
+            resetBtn.addEventListener('click', function() {
+                // Clear all form fields
+                document.querySelectorAll('input').forEach(input => {
+                    input.value = '';
+                });
+                
+                // Reset mode selection
+                modeOptions.forEach(opt => opt.classList.remove('active'));
+                modeFields.forEach(field => field.style.display = 'none');
+                
+                // Hide output
+                outputContainer.style.display = 'none';
+            });
+            
+            // History button handler
+            historyBtn.addEventListener('click', function() {
+                historyPanel.style.display = historyPanel.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            // Copy to clipboard function
+            copyBtn.addEventListener('click', function() {
+                const text = generatedUrl.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification('URL copied to clipboard!');
+                });
+            });
+            
+            // Add to history function
+            function addToHistory(mode, url) {
+                // Add to beginning of history array
+                history.unshift({
+                    mode,
+                    url,
+                    timestamp: new Date().toISOString()
+                });
+                
+                // Keep only last 10 items
+                if (history.length > 10) {
+                    history = history.slice(0, 10);
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('portalHistory', JSON.stringify(history));
+                
+                // Update UI
+                renderHistory();
+            }
+            
+            // Render history function
+            function renderHistory() {
+                if (history.length === 0) {
+                    historyList.innerHTML = '<p>No history yet</p>';
+                    return;
+                }
+                
+                historyList.innerHTML = '';
+                
+                history.forEach((item, index) => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    
+                    const date = new Date(item.timestamp);
+                    const timeString = date.toLocaleTimeString();
+                    
+                    historyItem.innerHTML = `
+                        <div>
+                            <strong>${item.mode.toUpperCase()}</strong>
+                            <div>${timeString}</div>
+                        </div>
+                        <button class="btn" data-index="${index}"><i class="fas fa-copy"></i></button>
+                    `;
+                    
+                    historyList.appendChild(historyItem);
+                    
+                    // Add event listener to copy button
+                    historyItem.querySelector('button').addEventListener('click', function() {
+                        const idx = this.getAttribute('data-index');
+                        navigator.clipboard.writeText(history[idx].url).then(() => {
+                            showNotification('URL copied from history!');
+                        });
+                    });
+                });
+            }
+            
+            // Show notification
+            function showNotification(message) {
+                notification.querySelector('span').textContent = message;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Show error message
+            function showError(message) {
+                notification.style.background = 'var(--error)';
+                notification.querySelector('i').className = 'fas fa-exclamation-circle';
+                showNotification(message);
+                
+                setTimeout(() => {
+                    notification.style.background = '';
+                    notification.querySelector('i').className = 'fas fa-check-circle';
+                }, 3000);
+            }
+            
+            // Validate URL format
+            function isValidUrl(string) {
+                try {
+                    new URL(string);
+                    return true;
+                } catch (_) {
+                    return false;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
