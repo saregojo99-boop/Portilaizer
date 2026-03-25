@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Gojo · Stalker Portal Builder with Shortener</title>
+    <title>Gojo · IPTV Portal Builder (Xtream + MAC + Stalker)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -33,7 +33,7 @@
         }
 
         .gojo-container {
-            max-width: 950px;
+            max-width: 1100px;
             margin: 0 auto;
             background: #ffffff;
             border-radius: 2.5rem;
@@ -97,6 +97,58 @@
             padding: 2rem 2rem 1.8rem;
         }
 
+        .mode-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .mode-tab {
+            padding: 0.8rem 1.8rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-tab i {
+            font-size: 1.1rem;
+        }
+
+        .mode-tab.active {
+            background: linear-gradient(95deg, #2c7be5, #1e5bc0);
+            color: white;
+            box-shadow: 0 4px 12px rgba(44,123,229,0.3);
+        }
+
+        .mode-tab:hover:not(.active) {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        .mode-fields {
+            display: none;
+            animation: fadeSlideUp 0.3s ease;
+        }
+
+        .mode-fields.active {
+            display: block;
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .exclusive-badge {
             display: inline-flex;
             align-items: center;
@@ -109,11 +161,6 @@
             color: #1a5bbf;
             font-weight: 600;
             font-size: 0.85rem;
-        }
-
-        .exclusive-badge i {
-            font-size: 1rem;
-            color: #2c7be5;
         }
 
         .form-card {
@@ -193,7 +240,7 @@
 
         .row-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.2rem;
         }
 
@@ -272,11 +319,6 @@
             animation: fadeSlideUp 0.3s ease;
         }
 
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .url-glass {
             background: #ffffff;
             border-radius: 1.2rem;
@@ -333,10 +375,6 @@
         .copy-btn-sm:hover {
             background: #d9eaff;
             transform: scale(1.02);
-        }
-
-        .copy-btn-sm:active {
-            transform: scale(0.98);
         }
 
         .info-message {
@@ -463,10 +501,6 @@
             padding-top: 8px;
         }
 
-        .manual-copy-hint i {
-            margin-right: 4px;
-        }
-
         footer {
             border-top: 1px solid #cde2fc;
             margin-top: 1rem;
@@ -487,6 +521,7 @@
             .action-group .btn { padding: 0.7rem 1.2rem; font-size: 0.8rem; }
             .url-glass { flex-direction: column; }
             .url-text { width: 100%; }
+            .mode-tab { padding: 0.5rem 1rem; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -494,65 +529,127 @@
 
 <div class="gojo-container">
     <div class="gojo-header">
-        <h1><i class="fas fa-infinity"></i> GOJO · STALKER
-            <span class="worker-badge"><i class="fas fa-cloud-upload-alt"></i> v2.0</span>
+        <h1><i class="fas fa-infinity"></i> GOJO · IPTV BUILDER
+            <span class="worker-badge"><i class="fas fa-cloud-upload-alt"></i> v3.0</span>
         </h1>
-        <p>⚡ limitless portal builder | white & sky realm | auto shortener</p>
+        <p>⚡ Stalker | Xtream Codes | MAC Portal | Simple Input Fields</p>
     </div>
     <div class="content-pad">
-        <div class="exclusive-badge">
-            <i class="fas fa-tower-cell"></i> STALKER PORTAL MODE · MAC + AUTH
-            <i class="fas fa-link" style="margin-left: 6px;"></i> spoo.me shortener
+        <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="stalker">
+                <i class="fas fa-tv"></i> Stalker Portal
+            </button>
+            <button class="mode-tab" data-mode="xtream">
+                <i class="fas fa-code-branch"></i> Xtream Codes
+            </button>
+            <button class="mode-tab" data-mode="mac">
+                <i class="fas fa-ethernet"></i> MAC Portal
+            </button>
         </div>
 
-        <div class="form-card">
-            <div class="input-group">
-                <label><i class="fas fa-globe"></i> Portal URL <span class="req-star">required</span></label>
-                <div class="input-icon">
-                    <i class="fas fa-link"></i>
-                    <input type="text" id="stalker_url" placeholder="http://your-portal.com/stalker_portal/ or http://portal.xyz/c/">
-                </div>
-                <div class="helper-text"><i class="fas fa-info-circle"></i> Stalker middleware portal URL</div>
+        <!-- Stalker Mode Fields - Simple Input Fields -->
+        <div id="stalker-fields" class="mode-fields active">
+            <div class="exclusive-badge">
+                <i class="fas fa-tower-cell"></i> STALKER PORTAL · Enter your credentials
             </div>
-
-            <div class="input-group">
-                <label><i class="fas fa-microchip"></i> MAC Address <span class="req-star">required</span></label>
-                <div class="input-icon">
-                    <i class="fas fa-ethernet"></i>
-                    <input type="text" id="mac" placeholder="00:1A:79:AA:BB:CC" value="00:1A:79:">
+            <div class="form-card">
+                <div class="input-group">
+                    <label><i class="fas fa-globe"></i> Portal URL <span class="req-star">required</span></label>
+                    <div class="input-icon">
+                        <i class="fas fa-link"></i>
+                        <input type="text" id="stalker_url" placeholder="http://your-portal.com/stalker_portal/">
+                    </div>
                 </div>
-                <div class="helper-text">Format: 00:1A:79:xx:xx:xx (standard Stalker MAC)</div>
+                <div class="input-group">
+                    <label><i class="fas fa-microchip"></i> MAC Address <span class="req-star">required</span></label>
+                    <div class="input-icon">
+                        <i class="fas fa-ethernet"></i>
+                        <input type="text" id="stalker_mac" placeholder="00:1A:79:XX:XX:XX" value="00:1A:79:">
+                    </div>
+                </div>
+                <div class="row-grid">
+                    <div class="input-group">
+                        <label><i class="fas fa-barcode"></i> Serial Number <span class="opt-badge">optional</span></label>
+                        <div class="input-icon">
+                            <i class="fas fa-qrcode"></i>
+                            <input type="text" id="stalker_sn" placeholder="Enter serial number (optional)">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fas fa-id-card"></i> Device ID 1 <span class="opt-badge">optional</span></label>
+                        <div class="input-icon">
+                            <i class="fas fa-microchip"></i>
+                            <input type="text" id="stalker_device_id1" placeholder="Enter device ID 1 (optional)">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fas fa-id-card-alt"></i> Device ID 2 <span class="opt-badge">optional</span></label>
+                        <div class="input-icon">
+                            <i class="fas fa-dice-d6"></i>
+                            <input type="text" id="stalker_device_id2" placeholder="Enter device ID 2 (optional)">
+                        </div>
+                    </div>
+                </div>
+                <div class="helper-text">
+                    <i class="fas fa-info-circle"></i> Enter your Stalker portal details. All fields except URL and MAC are optional.
+                </div>
             </div>
+        </div>
 
-            <div class="row-grid">
+        <!-- Xtream Codes Fields -->
+        <div id="xtream-fields" class="mode-fields">
+            <div class="exclusive-badge">
+                <i class="fas fa-code-branch"></i> XTREAM CODES · Username/Password Auth
+            </div>
+            <div class="form-card">
+                <div class="row-grid">
+                    <div class="input-group">
+                        <label><i class="fas fa-server"></i> Host URL <span class="req-star">required</span></label>
+                        <div class="input-icon">
+                            <i class="fas fa-link"></i>
+                            <input type="text" id="xtream_host" placeholder="http://your-server.com:8080">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fas fa-user"></i> Username <span class="req-star">required</span></label>
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="xtream_username" placeholder="Your username">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fas fa-lock"></i> Password <span class="req-star">required</span></label>
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="xtream_password" placeholder="Your password">
+                        </div>
+                    </div>
+                </div>
+                <div class="helper-text"><i class="fas fa-info-circle"></i> Generates playlist and stream URLs for Xtream Codes API</div>
+            </div>
+        </div>
+
+        <!-- MAC Portal Fields -->
+        <div id="mac-fields" class="mode-fields">
+            <div class="exclusive-badge">
+                <i class="fas fa-ethernet"></i> MAC PORTAL · Device ID Based Auth
+            </div>
+            <div class="form-card">
                 <div class="input-group">
-                    <label><i class="fas fa-barcode"></i> Serial Number <span class="opt-badge">optional</span></label>
+                    <label><i class="fas fa-globe"></i> Portal URL <span class="req-star">required</span></label>
                     <div class="input-icon">
-                        <i class="fas fa-qrcode"></i>
-                        <input type="text" id="sn" placeholder="auto-generated if empty">
+                        <i class="fas fa-link"></i>
+                        <input type="text" id="mac_portal_url" placeholder="http://your-mac-portal.com/c/">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label><i class="fas fa-id-card"></i> Device ID 1 <span class="opt-badge">optional</span></label>
+                    <label><i class="fas fa-microchip"></i> MAC Address <span class="req-star">required</span></label>
                     <div class="input-icon">
-                        <i class="fas fa-microchip"></i>
-                        <input type="text" id="device_id1" placeholder="device id (hex/string)">
+                        <i class="fas fa-ethernet"></i>
+                        <input type="text" id="mac_address" placeholder="00:1A:79:XX:XX:XX" value="00:1A:79:">
                     </div>
                 </div>
-                <div class="input-group">
-                    <label><i class="fas fa-id-card-alt"></i> Device ID 2 <span class="opt-badge">optional</span></label>
-                    <div class="input-icon">
-                        <i class="fas fa-dice-d6"></i>
-                        <input type="text" id="device_id2" placeholder="second device id">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label><i class="fas fa-signature"></i> Signature <span class="opt-badge">optional</span></label>
-                    <div class="input-icon">
-                        <i class="fas fa-pen-fancy"></i>
-                        <input type="text" id="sig" placeholder="signature token if required">
-                    </div>
-                </div>
+                <div class="helper-text"><i class="fas fa-info-circle"></i> MAC Portal uses device MAC for authentication (MAG/STB Emulator)</div>
             </div>
         </div>
 
@@ -565,31 +662,30 @@
 
         <div id="outputBlock" class="output-area">
             <div class="url-glass">
-                <span class="url-text" id="generatedUrlText" onclick="selectAndCopy(this)">—</span>
+                <span class="url-text" id="generatedUrlText">—</span>
                 <button id="copyUrlBtn" class="copy-btn-sm"><i class="far fa-copy"></i> Copy URL</button>
             </div>
             <div id="shortenedContainer" class="shortened-glass">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                     <span><i class="fas fa-link" style="color: #10b981;"></i> <strong>Shortened URL:</strong></span>
-                    <span class="url-text" id="shortenedUrlText" onclick="selectAndCopy(this)">—</span>
+                    <span class="url-text" id="shortenedUrlText">—</span>
                     <button id="copyShortenedBtn" class="copy-btn-sm"><i class="far fa-copy"></i> Copy Short</button>
                 </div>
             </div>
-            <div class="info-message">
-                <i class="fas fa-play-circle"></i> <strong>Unlimited realm:</strong> Use this URL as a portal link in any STB emulator / IPTV app.<br>
-                <span style="font-size:0.7rem;">🔹 Works with TiviMate, Kodi (stalker pvr), Smart STB, and all Stalker middleware</span>
+            <div class="info-message" id="infoMessage">
+                <i class="fas fa-play-circle"></i> <strong>Ready:</strong> Use this URL in your IPTV player
             </div>
             <div class="meta-info" id="metaPayload">
-                <i class="fas fa-database"></i> Encoded configuration ready
+                <i class="fas fa-database"></i> Configuration ready
             </div>
             <div class="manual-copy-hint">
-                <i class="fas fa-hand-pointer"></i> <strong>Manual Copy:</strong> Click on any URL text to select it, then press Ctrl+C (Cmd+C on Mac) to copy
+                <i class="fas fa-hand-pointer"></i> Click on any URL text to select it, then press Ctrl+C (Cmd+C) to copy
             </div>
         </div>
 
         <div id="historyPanel" class="history-panel">
             <div class="history-header">
-                <strong><i class="fas fa-history"></i> Recent Stalker builds</strong>
+                <strong><i class="fas fa-history"></i> Recent builds</strong>
                 <button id="clearHistoryBtn" style="background: none; border: none; color: #2c7be5; cursor: pointer;"><i class="fas fa-trash-alt"></i> Clear</button>
             </div>
             <div id="historyListContainer" class="history-list">
@@ -598,8 +694,8 @@
         </div>
     </div>
     <footer>
-        <span><i class="fas fa-infinity"></i> Gojo Satoru · Stalker Portal engine</span>
-        <span><i class="fas fa-cloud"></i> Worker: cold-snowflake-35fa.servertvhub564.workers.dev</span>
+        <span><i class="fas fa-infinity"></i> Gojo Satoru · IPTV Portal Engine</span>
+        <span><i class="fas fa-cloud"></i> Supports Stalker | Xtream | MAC Portal</span>
     </footer>
 </div>
 
@@ -614,22 +710,36 @@
     let historyArray = [];
     let currentLongUrl = '';
     let currentShortUrl = '';
+    let currentMode = 'stalker';
 
-    // Load history from localStorage
-    try {
-        const stored = localStorage.getItem("gojo_stalker_history");
-        if(stored) historyArray = JSON.parse(stored);
-        if(!Array.isArray(historyArray)) historyArray = [];
-    } catch(e) { historyArray = []; }
+    // Mode switching
+    const modeTabs = document.querySelectorAll('.mode-tab');
+    const modeFields = document.querySelectorAll('.mode-fields');
+    
+    modeTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const mode = tab.getAttribute('data-mode');
+            currentMode = mode;
+            
+            modeTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            modeFields.forEach(field => field.classList.remove('active'));
+            document.getElementById(`${mode}-fields`).classList.add('active');
+            
+            // Hide output when switching modes
+            document.getElementById('outputBlock').style.display = 'none';
+            document.getElementById('shortenBtn').style.display = 'none';
+        });
+    });
 
-    // Universal copy function with manual fallback
+    // Copy to clipboard function
     async function copyToClipboard(text, successMsg = "Copied to clipboard!") {
         if (!text || text === '—') {
             showToast("Nothing to copy", true);
             return false;
         }
         
-        // Method 1: Modern clipboard API
         try {
             if (navigator.clipboard && window.isSecureContext) {
                 await navigator.clipboard.writeText(text);
@@ -637,41 +747,33 @@
                 return true;
             }
         } catch (err) {
-            console.log('Clipboard API failed, trying fallback...');
+            console.log('Clipboard API failed');
         }
         
-        // Method 2: Fallback using textarea
         try {
             const textArea = document.createElement('textarea');
             textArea.value = text;
             textArea.style.position = 'fixed';
             textArea.style.left = '-999999px';
-            textArea.style.top = '-999999px';
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
-            
             const successful = document.execCommand('copy');
             document.body.removeChild(textArea);
-            
             if (successful) {
                 showToast(successMsg, false);
                 return true;
             }
         } catch (err) {
-            console.log('Fallback copy failed:', err);
+            console.log('Fallback copy failed');
         }
         
-        // Method 3: Manual selection guide
-        showToast("⚠️ Auto-copy failed. Click the URL to select it manually, then press Ctrl+C", true);
+        showToast("Click the URL to select it, then press Ctrl+C", true);
         return false;
     }
 
-    // Select text and show hint for manual copy
     function selectAndCopy(element) {
         if (!element || !element.innerText || element.innerText === '—') return;
-        
-        // Select the text
         if (window.getSelection) {
             const selection = window.getSelection();
             const range = document.createRange();
@@ -679,15 +781,13 @@
             selection.removeAllRanges();
             selection.addRange(range);
         }
-        
-        // Try auto copy
         copyToClipboard(element.innerText, "URL selected! Press Ctrl+C to copy");
     }
 
-    function normalizePortalUrl(url) {
+    function normalizeUrl(url) {
         if(!url || typeof url !== 'string') return '';
         let trimmed = url.trim();
-        if(trimmed.endsWith('c/')) return trimmed.slice(0, -2);
+        if(trimmed.endsWith('/')) trimmed = trimmed.slice(0, -1);
         return trimmed;
     }
 
@@ -704,53 +804,57 @@
         return macRegex.test(mac);
     }
 
-    function generateSN() {
-        return 'SN_' + Math.random().toString(36).substring(2, 15).toUpperCase();
+    // Build config based on current mode
+    function buildConfig() {
+        if (currentMode === 'stalker') {
+            const url = document.getElementById('stalker_url')?.value.trim() || "";
+            const mac = document.getElementById('stalker_mac')?.value.trim() || "";
+            const sn = document.getElementById('stalker_sn')?.value.trim() || "";
+            const device_id1 = document.getElementById('stalker_device_id1')?.value.trim() || "";
+            const device_id2 = document.getElementById('stalker_device_id2')?.value.trim() || "";
+            
+            if(!url) { showToast("Portal URL is required", true); return null; }
+            if(!isValidHttpUrl(url)) { showToast("Invalid Portal URL", true); return null; }
+            if(!mac) { showToast("MAC address is required", true); return null; }
+            if(!isMacValid(mac)) { showToast("Invalid MAC format (00:1A:79:XX:XX:XX)", true); return null; }
+            
+            const config = { mode: "stalker", stalker_url: normalizeUrl(url), mac: mac.toUpperCase() };
+            if(sn) config.sn = sn;
+            if(device_id1) config.device_id1 = device_id1;
+            if(device_id2) config.device_id2 = device_id2;
+            return config;
+            
+        } else if (currentMode === 'xtream') {
+            const host = document.getElementById('xtream_host')?.value.trim() || "";
+            const username = document.getElementById('xtream_username')?.value.trim() || "";
+            const password = document.getElementById('xtream_password')?.value.trim() || "";
+            
+            if(!host) { showToast("Host URL is required", true); return null; }
+            if(!isValidHttpUrl(host)) { showToast("Invalid Host URL", true); return null; }
+            if(!username) { showToast("Username is required", true); return null; }
+            if(!password) { showToast("Password is required", true); return null; }
+            
+            return { mode: "xstream", host: normalizeUrl(host), username, password };
+            
+        } else if (currentMode === 'mac') {
+            const portal = document.getElementById('mac_portal_url')?.value.trim() || "";
+            const mac = document.getElementById('mac_address')?.value.trim() || "";
+            
+            if(!portal) { showToast("Portal URL is required", true); return null; }
+            if(!isValidHttpUrl(portal)) { showToast("Invalid Portal URL", true); return null; }
+            if(!mac) { showToast("MAC address is required", true); return null; }
+            if(!isMacValid(mac)) { showToast("Invalid MAC format", true); return null; }
+            
+            return { mode: "mag", portal: normalizeUrl(portal), mac: mac.toUpperCase() };
+        }
+        
+        return null;
     }
 
-    function collectStalkerConfig() {
-        let rawUrl = document.getElementById('stalker_url')?.value.trim() || "";
-        let mac = document.getElementById('mac')?.value.trim() || "";
-        let sn = document.getElementById('sn')?.value.trim() || generateSN();
-        let device_id1 = document.getElementById('device_id1')?.value.trim() || "";
-        let device_id2 = document.getElementById('device_id2')?.value.trim() || "";
-        let sig = document.getElementById('sig')?.value.trim() || "";
-
-        const portal = normalizePortalUrl(rawUrl);
-        if(!portal) {
-            showToast("❌ Portal URL is required", true);
-            return null;
-        }
-        if(!isValidHttpUrl(portal)) {
-            showToast("❌ Portal URL must start with http:// or https://", true);
-            return null;
-        }
-        if(!mac) {
-            showToast("❌ MAC address is required", true);
-            return null;
-        }
-        if(!isMacValid(mac)) {
-            showToast("⚠️ MAC format should be like 00:1A:79:AB:CD:EF", true);
-            return null;
-        }
-
-        const config = {
-            mode: "stalker",
-            stalker_url: portal,
-            mac: mac.toUpperCase(),
-        };
-        if(sn) config.sn = sn;
-        if(device_id1) config.device_id1 = device_id1;
-        if(device_id2) config.device_id2 = device_id2;
-        if(sig) config.sig = sig;
-
-        return config;
-    }
-
-    function buildStalkerUrl() {
-        const config = collectStalkerConfig();
+    function buildUrl() {
+        const config = buildConfig();
         if(!config) return null;
-
+        
         try {
             const jsonString = JSON.stringify(config);
             const base64Encoded = btoa(unescape(encodeURIComponent(jsonString)));
@@ -777,19 +881,10 @@
                 body: formData.toString()
             });
             
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-            
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const data = await response.json();
             
-            if (data.short_url) {
-                return data.short_url;
-            } else if (data.url) {
-                return data.url;
-            } else {
-                throw new Error('Invalid response from shortener');
-            }
+            return data.short_url || data.url || null;
         } catch (error) {
             console.error('Shortening error:', error);
             return null;
@@ -797,44 +892,46 @@
     }
 
     async function generateAndShorten() {
-        const result = buildStalkerUrl();
+        const result = buildUrl();
         if(!result) return;
-
+        
         const { url, encoded, config } = result;
         currentLongUrl = url;
         
-        // Update UI
         const urlSpan = document.getElementById('generatedUrlText');
         const metaSpan = document.getElementById('metaPayload');
+        const infoMsg = document.getElementById('infoMessage');
+        
         if(urlSpan) urlSpan.innerText = url;
-        if(metaSpan) metaSpan.innerHTML = `<i class="fas fa-lock"></i> Base64 payload · ${encoded.substring(0, 38)}...`;
-
+        
+        let modeName = currentMode === 'stalker' ? 'Stalker' : (currentMode === 'xtream' ? 'Xtream Codes' : 'MAC Portal');
+        if(metaSpan) metaSpan.innerHTML = `<i class="fas fa-lock"></i> ${modeName} · ${encoded.substring(0, 45)}...`;
+        
+        if(infoMsg) infoMsg.innerHTML = `<i class="fas fa-play-circle"></i> <strong>${modeName} URL generated!</strong> Use this URL in your IPTV player`;
+        
         const outputDiv = document.getElementById('outputBlock');
         if(outputDiv) outputDiv.style.display = 'block';
         
-        // Show shorten button
         const shortenBtn = document.getElementById('shortenBtn');
         if(shortenBtn) shortenBtn.style.display = 'inline-flex';
         
-        // Hide shortened container initially
         const shortContainer = document.getElementById('shortenedContainer');
         if(shortContainer) shortContainer.style.display = 'none';
         currentShortUrl = '';
         
-        // Add to history
         const historyItem = {
-            mode: "stalker",
+            mode: currentMode,
             url: url,
             timestamp: new Date().toISOString(),
             preview: url.length > 58 ? url.substring(0, 55)+'...' : url,
-            mac: config.mac || "?"
+            info: currentMode === 'stalker' ? config.mac : (currentMode === 'xtream' ? config.username : config.mac)
         };
         historyArray.unshift(historyItem);
         if(historyArray.length > 12) historyArray.pop();
-        localStorage.setItem("gojo_stalker_history", JSON.stringify(historyArray));
+        localStorage.setItem("gojo_iptv_history", JSON.stringify(historyArray));
         renderHistory();
         
-        showToast("✨ Portal URL generated", false);
+        showToast(`✨ ${modeName} URL generated`, false);
         outputDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         
         return { url, encoded, config };
@@ -855,18 +952,15 @@
             const shortUrl = await shortenUrl(currentLongUrl);
             if (shortUrl) {
                 currentShortUrl = shortUrl;
-                
                 const shortUrlSpan = document.getElementById('shortenedUrlText');
                 if(shortUrlSpan) shortUrlSpan.innerText = shortUrl;
-                
                 const shortContainer = document.getElementById('shortenedContainer');
                 if(shortContainer) shortContainer.style.display = 'block';
-                
                 showToast("✅ URL shortened successfully!", false);
                 
                 if (historyArray.length > 0) {
                     historyArray[0].shortened = shortUrl;
-                    localStorage.setItem("gojo_stalker_history", JSON.stringify(historyArray));
+                    localStorage.setItem("gojo_iptv_history", JSON.stringify(historyArray));
                     renderHistory();
                 }
             } else {
@@ -891,12 +985,14 @@
         historyArray.forEach((item, idx) => {
             const date = new Date(item.timestamp);
             const timeStr = `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+            const modeIcon = item.mode === 'stalker' ? 'fa-tv' : (item.mode === 'xtream' ? 'fa-code-branch' : 'fa-ethernet');
+            const modeName = item.mode === 'stalker' ? 'STALKER' : (item.mode === 'xtream' ? 'XTREAM' : 'MAC');
             html += `
                 <div class="history-item">
                     <div style="flex:1; overflow:hidden;">
                         <div style="display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;">
-                            <span style="font-weight:700; font-size:0.7rem; background:#e2efff; padding:2px 8px; border-radius:30px;">STALKER</span>
-                            <span style="font-size:0.7rem; color:#2b6eaf;">${escapeHtml(item.mac)}</span>
+                            <span style="font-weight:700; font-size:0.7rem; background:#e2efff; padding:2px 8px; border-radius:30px;"><i class="fas ${modeIcon}"></i> ${modeName}</span>
+                            <span style="font-size:0.7rem; color:#2b6eaf;">${escapeHtml(item.info || '')}</span>
                             ${item.shortened ? `<span style="font-size:0.65rem; background:#10b98120; padding:2px 8px; border-radius:30px; color:#059669;"><i class="fas fa-link"></i> shortened</span>` : ''}
                         </div>
                         <div style="font-size:0.7rem; font-family: monospace; margin-top: 5px; word-break: break-all;">${escapeHtml(item.preview)}</div>
@@ -913,9 +1009,7 @@
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 const copyUrl = btn.getAttribute('data-url');
-                if(copyUrl) {
-                    await copyToClipboard(copyUrl, "History URL copied!");
-                }
+                if(copyUrl) await copyToClipboard(copyUrl, "History URL copied!");
             });
         });
     }
@@ -932,11 +1026,15 @@
 
     function resetForm() {
         document.getElementById('stalker_url').value = '';
-        document.getElementById('mac').value = '00:1A:79:';
-        document.getElementById('sn').value = '';
-        document.getElementById('device_id1').value = '';
-        document.getElementById('device_id2').value = '';
-        document.getElementById('sig').value = '';
+        document.getElementById('stalker_mac').value = '00:1A:79:';
+        document.getElementById('stalker_sn').value = '';
+        document.getElementById('stalker_device_id1').value = '';
+        document.getElementById('stalker_device_id2').value = '';
+        document.getElementById('xtream_host').value = '';
+        document.getElementById('xtream_username').value = '';
+        document.getElementById('xtream_password').value = '';
+        document.getElementById('mac_portal_url').value = '';
+        document.getElementById('mac_address').value = '00:1A:79:';
         document.getElementById('outputBlock').style.display = 'none';
         document.getElementById('shortenBtn').style.display = 'none';
         document.getElementById('shortenedContainer').style.display = 'none';
@@ -947,22 +1045,19 @@
 
     function clearHistory() {
         historyArray = [];
-        localStorage.setItem("gojo_stalker_history", JSON.stringify(historyArray));
+        localStorage.setItem("gojo_iptv_history", JSON.stringify(historyArray));
         renderHistory();
         showToast("History cleared", false);
     }
 
-    let historyPanelVisible = false;
     function toggleHistoryPanel() {
         const panel = document.getElementById('historyPanel');
         if(panel) {
             if(panel.style.display === 'none' || getComputedStyle(panel).display === 'none') {
                 panel.style.display = 'block';
                 renderHistory();
-                historyPanelVisible = true;
             } else {
                 panel.style.display = 'none';
-                historyPanelVisible = false;
             }
         }
     }
@@ -987,22 +1082,18 @@
 
     // Event binding
     document.addEventListener('DOMContentLoaded', () => {
-        const macInput = document.getElementById('mac');
-        if(macInput && !macInput.value) macInput.value = "00:1A:79:";
-        
         document.getElementById('generateBtn')?.addEventListener('click', generateAndShorten);
         document.getElementById('shortenBtn')?.addEventListener('click', shortenCurrentUrl);
         document.getElementById('resetBtn')?.addEventListener('click', resetForm);
         document.getElementById('historyToggleBtn')?.addEventListener('click', toggleHistoryPanel);
         document.getElementById('clearHistoryBtn')?.addEventListener('click', clearHistory);
         
-        // Copy buttons with improved handling
         document.getElementById('copyUrlBtn')?.addEventListener('click', async () => {
             const urlElem = document.getElementById('generatedUrlText');
             if(urlElem && urlElem.innerText && urlElem.innerText !== '—') {
                 await copyToClipboard(urlElem.innerText, "URL copied!");
             } else {
-                showToast("Generate a portal URL first", true);
+                showToast("Generate a URL first", true);
             }
         });
         
@@ -1015,13 +1106,16 @@
             }
         });
         
+        document.getElementById('generatedUrlText')?.addEventListener('click', function() { selectAndCopy(this); });
+        document.getElementById('shortenedUrlText')?.addEventListener('click', function() { selectAndCopy(this); });
+        
         document.getElementById('outputBlock').style.display = 'none';
         document.getElementById('historyPanel').style.display = 'none';
         document.getElementById('shortenBtn').style.display = 'none';
         
         renderHistory();
         
-        console.log('Gojo Stalker Portal Builder initialized');
+        console.log('Gojo IPTV Builder initialized - Simple input fields, no generate buttons');
     });
 </script>
 </body>
